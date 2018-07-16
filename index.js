@@ -1,6 +1,19 @@
-const http = require('http')
+if(!process.env.token) {
+  console.log("Error: Specify token in environment");
+  process.exit(1);
+}
 
-http.createServer((request, response) => {
-    response.writeHead(200, {"Content-Type": "text/plain"})
-    response.end("Hello World\n")
-}).listen(process.env.PORT)
+const Botkit = require("botkit");
+const controller = Botkit.slackbot({
+  debug: false
+});
+
+const bot = controller.spawn({
+  token: process.env.token
+}).startRTM();
+
+controller.hears(
+  ["hi"],
+  "direct_message,direct_mention,mention",
+  (bot, message) => { bot.reply(message, 'bye') }
+);
