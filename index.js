@@ -20,7 +20,8 @@ const bot = controller.spawn({
 
 controller.hears(
   ["(.*)"], "direct_message,direct_mention,mention", (bot, message) => {
-    const params = { q: `${message.text} filter:images`, count: 1 };
+    const userId = process.env.TWITTER_TGT_USER_ID;
+    const params = { q: `${message.text} from:${userId}`, count: 1 };
     client.get('search/tweets', params, (error, tweets) => {
       if(error) {
         console.log(error);
@@ -28,7 +29,7 @@ controller.hears(
         return;
       }
       if(tweets.statuses.length == 0) {
-        bot.reply(message, "no data");
+        bot.reply(message, "No data");
         return;
       }
       bot.reply(message, tweets.statuses[0].text);
